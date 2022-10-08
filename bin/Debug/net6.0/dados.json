@@ -1,0 +1,18 @@
+[
+    {
+        "PacienteId":"1",
+        "Nome":"Teste",
+        "DataNasc":"110996",
+        "Sexo":"M",
+        "Telefone":"41997277806"
+      },
+    
+      {
+        "ProcedimentoId":"1",
+        "Medico":"Dr.Joao",
+        "Codigo":"0407030026",
+        "DescProcedimento":"Colecistectomia",
+        "QtdProcedimento":"1",
+        "PacienteId":"1"
+      }
+]
