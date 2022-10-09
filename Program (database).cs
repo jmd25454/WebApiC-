@@ -85,6 +85,8 @@ namespace Trabalho
 			//listar todos os internamentos de um paciente específico
 			app.MapGet("/internamentos/paciente/{id}", (BaseHospital baseHospital, int id) => {
 				 return baseHospital.Internamentos
+				 .Include(Internamento => Internamento.Pacientes)
+				 .Include(Internamento => Internamento.Procedimentos)
 				 .Where(x => x.PacienteId == id).ToList();
 			});
 
