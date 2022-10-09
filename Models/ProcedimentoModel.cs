@@ -9,11 +9,11 @@ namespace myAPI.Models
 		[Key]
         public int ProcedimentoId { get; set; }
 		public string? Medico { get; set; }
-		public string? Codigo { get; set; }
+		public string? MedicoCBO { get; set; }
+		public string? Codigo_Procedimento { get; set; }
 		public string? DescProcedimento { get; set; }
 		public int QtdProcedimento { get; set; }
 		[ForeignKey("PacienteID")]
 		public int PacienteId { get; set; }
-
     }
 }

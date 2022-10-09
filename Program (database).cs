@@ -34,8 +34,43 @@ namespace Trabalho
 			
 			var connectionString = builder.Configuration.GetConnectionString("Hospital") ?? "Data Source=Hospital.db";
 			builder.Services.AddSqlite<BaseHospital>(connectionString);
-			
+
+			// Add services to the container.
+			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+			builder.Services.AddEndpointsApiExplorer();
+			builder.Services.AddSwaggerGen();
+
 			var app = builder.Build();
+
+			// Configure the HTTP request pipeline.
+			if (app.Environment.IsDevelopment())
+			{
+				app.UseSwagger();
+				app.UseSwaggerUI();
+			}
+
+			//cadastrar Paciente
+			app.MapPost("/cadastrarPaciente", (BaseHospital baseHospital, PacienteModel Pacientes) =>
+			{
+				baseHospital.Pacientes.Add(Pacientes);
+				baseHospital.SaveChanges();
+				return "Paciente adicionado";
+			});
+			//cadastrar Procedimento
+			app.MapPost("/cadastrarProcedimento", (BaseHospital baseHospital, ProcedimentoModel Procedimentos) =>
+			{
+				baseHospital.Procedimentos.Add(Procedimentos);
+				baseHospital.SaveChanges();
+				return "Procedimento adicionado";
+			});
+
+			//cadastrar Internamento
+			app.MapPost("/cadastrarInternamento", (BaseHospital baseHospital, InternamentoModel Internamentos) =>
+			{
+				baseHospital.Internamentos.Add(Internamentos);
+				baseHospital.SaveChanges();
+				return "Internamento adicionado";
+			});
 
 			//listar todos os Pacientes
 			app.MapGet("/pacientes", (BaseHospital baseHospital) => {
@@ -52,34 +87,23 @@ namespace Trabalho
 			app.MapGet("/internamentos", (BaseHospital baseHospital) => {
 				return (baseHospital.Internamentos.ToList());
 			});
+
+			//listar todos os procedimentos de um paciente específico
+			app.MapGet("/procedimentos/paciente/{id}", (BaseHospital baseHospital, int id) => {
+				 return baseHospital.Procedimentos
+				 .Where(x => x.PacienteId == id).ToList();
+			});
+
+			//listar todos os procedimentos de um médico especifico
+			app.MapGet("/procedimentos/medico/{nome}", (BaseHospital baseHospital, String nome) => {
+				 return baseHospital.Procedimentos
+				 .Where(x => x.Medico == nome).ToList();
+			});
 			
 			//listar Paciente especifico (por id)
 			app.MapGet("/paciente/{id}", (BaseHospital baseHospital, int id) => {
 				return baseHospital.Pacientes.Find(id);
 				});
-			
-			//cadastrar Paciente
-			app.MapPost("/cadastrarPaciente", (BaseHospital baseHospital, PacienteModel Pacientes) =>
-			{
-				baseHospital.Pacientes.Add(Pacientes);
-				baseHospital.SaveChanges();
-				return "Paciente adicionado";
-			});
-			//cadastrar Procediemento
-			app.MapPost("/cadastrarProcedimento", (BaseHospital baseHospital, ProcedimentoModel Procedimentos) =>
-			{
-				baseHospital.Procedimentos.Add(Procedimentos);
-				baseHospital.SaveChanges();
-				return "Procedimento adicionado";
-			});
-
-			//cadastrar Internamento
-			app.MapPost("/cadastrarInternamento", (BaseHospital baseHospital, InternamentoModel Internamentos) =>
-			{
-				baseHospital.Internamentos.Add(Internamentos);
-				baseHospital.SaveChanges();
-				return "Internamento adicionado";
-			});
 			
 			//atualizar Paciente
 			app.MapPost("/atualizarPaciente/{id}", (BaseHospital baseHospital, PacienteModel PacienteAtualizado, int id) =>
@@ -98,7 +122,8 @@ namespace Trabalho
 			{
 				var Procedimento = baseHospital.Procedimentos.Find(id);
 				Procedimento.Medico = ProcedimentoAtualizado.Medico;
-				Procedimento.Codigo = ProcedimentoAtualizado.Codigo;
+				Procedimento.MedicoCBO = ProcedimentoAtualizado.MedicoCBO;
+				Procedimento.Codigo_Procedimento = ProcedimentoAtualizado.Codigo_Procedimento;
 				Procedimento.DescProcedimento = ProcedimentoAtualizado.DescProcedimento;
 				Procedimento.QtdProcedimento = ProcedimentoAtualizado.QtdProcedimento;
 				baseHospital.SaveChanges();
@@ -109,9 +134,12 @@ namespace Trabalho
 			app.MapPost("/atualizarInternamento/{id}", (BaseHospital baseHospital, InternamentoModel InternamentoAtualizado, int id) =>
 			{
 				var Internamento = baseHospital.Internamentos.Find(id);
-				Internamento.NumeroAIH = InternamentoAtualizado.NumeroAIH;
 				Internamento.DataInt = InternamentoAtualizado.DataInt;
 				Internamento.DataAlta = InternamentoAtualizado.DataAlta;
+				Internamento.Leito = InternamentoAtualizado.Leito;
+				Internamento.CID = InternamentoAtualizado.CID;				
+				Internamento.Carater_Atendimento = InternamentoAtualizado.Carater_Atendimento;
+				Internamento.Motivo_Encerramento = InternamentoAtualizado.Motivo_Encerramento;
 				baseHospital.SaveChanges();
 				return "Internamento atualizado";
 			});
@@ -119,6 +147,12 @@ namespace Trabalho
 			//deletar Paciente
 			app.MapPost("/deletarPaciente/{id}", (BaseHospital baseHospital, int id) =>
 			{
+				var Internamento = baseHospital.Internamentos.Find(id);
+				baseHospital.Remove(Internamento);
+				baseHospital.SaveChanges();
+				var Procedimento = baseHospital.Procedimentos.Find(id);
+				baseHospital.Remove(Procedimento);
+				baseHospital.SaveChanges();
 				var Paciente = baseHospital.Pacientes.Find(id);
 				baseHospital.Remove(Paciente);
 				baseHospital.SaveChanges();
@@ -139,6 +173,9 @@ namespace Trabalho
 			{
 				var Internamento = baseHospital.Internamentos.Find(id);
 				baseHospital.Remove(Internamento);
+				baseHospital.SaveChanges();
+				var Procedimento = baseHospital.Procedimentos.Find(id);
+				baseHospital.Remove(Procedimento);
 				baseHospital.SaveChanges();
 				return "Internamento deletado";
 			});

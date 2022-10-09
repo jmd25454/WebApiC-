@@ -16,5 +16,8 @@ namespace myAPI.Data
 		public DbSet<PacienteModel> Pacientes { get; set; } = null!;
 		public DbSet<ProcedimentoModel> Procedimentos { get; set; } = null!;
 		public DbSet<InternamentoModel> Internamentos { get; set; } = null!;
+
+		
 	}
+	
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -15,10 +14,14 @@ namespace myAPI.Migrations
                 {
                     InternamentoId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    NumeroAIH = table.Column<int>(type: "INTEGER", nullable: false),
-                    DataInt = table.Column<DateOnly>(type: "TEXT", nullable: false),
-                    DataAlta = table.Column<DateOnly>(type: "TEXT", nullable: false),
-                    ProcedimentoId = table.Column<int>(type: "INTEGER", nullable: false)
+                    Competencia = table.Column<string>(type: "TEXT", nullable: true),
+                    DataInt = table.Column<string>(type: "TEXT", nullable: true),
+                    DataAlta = table.Column<string>(type: "TEXT", nullable: true),
+                    Leito = table.Column<string>(type: "TEXT", nullable: true),
+                    CID = table.Column<string>(type: "TEXT", nullable: true),
+                    Carater_Atendimento = table.Column<string>(type: "TEXT", nullable: true),
+                    Motivo_Encerramento = table.Column<string>(type: "TEXT", nullable: true),
+                    PacienteId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -34,8 +37,7 @@ namespace myAPI.Migrations
                     Nome = table.Column<string>(type: "TEXT", nullable: true),
                     DataNasc = table.Column<string>(type: "TEXT", nullable: true),
                     Sexo = table.Column<string>(type: "TEXT", nullable: true),
-                    Telefone = table.Column<string>(type: "TEXT", nullable: true),
-                    ProcedimentoID = table.Column<int>(type: "INTEGER", nullable: false)
+                    Telefone = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -49,7 +51,8 @@ namespace myAPI.Migrations
                     ProcedimentoId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Medico = table.Column<string>(type: "TEXT", nullable: true),
-                    Codigo = table.Column<string>(type: "TEXT", nullable: true),
+                    MedicoCBO = table.Column<string>(type: "TEXT", nullable: true),
+                    Codigo_Procedimento = table.Column<string>(type: "TEXT", nullable: true),
                     DescProcedimento = table.Column<string>(type: "TEXT", nullable: true),
                     QtdProcedimento = table.Column<int>(type: "INTEGER", nullable: false),
                     PacienteId = table.Column<int>(type: "INTEGER", nullable: false)
@@ -57,18 +60,7 @@ namespace myAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Procedimentos", x => x.ProcedimentoId);
-                    table.ForeignKey(
-                        name: "FK_Procedimentos_Pacientes_PacienteId",
-                        column: x => x.PacienteId,
-                        principalTable: "Pacientes",
-                        principalColumn: "PacienteId",
-                        onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Procedimentos_PacienteId",
-                table: "Procedimentos",
-                column: "PacienteId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -77,10 +69,10 @@ namespace myAPI.Migrations
                 name: "Internamentos");
 
             migrationBuilder.DropTable(
-                name: "Procedimentos");
+                name: "Pacientes");
 
             migrationBuilder.DropTable(
-                name: "Pacientes");
+                name: "Procedimentos");
         }
     }
 }

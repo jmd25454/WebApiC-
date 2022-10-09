@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
 using myAPI.Data;
 
 namespace myAPI.Models
@@ -12,6 +13,6 @@ namespace myAPI.Models
     	public string? DataNasc { get; set; }
 		public string? Sexo { get; set; }
 		public string? Telefone { get; set; }
-
+		
     }
 }
